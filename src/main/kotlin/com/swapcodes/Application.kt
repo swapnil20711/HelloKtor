@@ -1,17 +1,24 @@
 package com.swapcodes
 
+import User
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
+        install(ContentNegotiation){
+            json()
+        }
         install(Routing) {
             homeRoute()
             urlParamRoute()
+            postReq()
         }
     }.start(wait = true)
 }
@@ -39,5 +46,15 @@ fun Routing.urlParamRoute() {
             else
                 "Coding language at index $fp+1 is ${list[fp]}"
         }
+    }
+}
+
+fun Routing.postReq() {
+    post("/login") {
+        call.respondText {
+            "Working..."
+        }
+        val user = call.receive<User>()
+        println(user)
     }
 }
