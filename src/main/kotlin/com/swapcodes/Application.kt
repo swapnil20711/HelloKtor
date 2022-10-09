@@ -12,15 +12,23 @@ import io.ktor.server.routing.*
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
-        install(ContentNegotiation){
+        install(ContentNegotiation) {
             json()
         }
         install(Routing) {
             homeRoute()
             urlParamRoute()
             postReq()
+            sendJsonRoute()
         }
     }.start(wait = true)
+}
+
+fun Routing.sendJsonRoute() {
+    get("/json") {
+        val user = User("jhon@gmai.com", "ckkssccsc")
+        call.respond(user)
+    }
 }
 
 fun Routing.homeRoute() {
